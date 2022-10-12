@@ -1,0 +1,175 @@
+ei = game.Workspace[game.Players.LocalPlayer.Name.."'s Base"].Enchanter.Item.Value
+rs = game:GetService("RunService")
+if ei then
+	ei = ei.Config
+end
+if enchantMode == "One Enchant" then
+	print('started enchanting')
+	while true do task.wait()
+		e1 = string.split(ei.Enchant1.Value,'"')
+		e2 = string.split(ei.Enchant2.Value,'"')
+		e3 = string.split(ei.Enchant3.Value,'"')
+		e4 = string.split(ei.Enchant4.Value,'"')
+		if table.find(toget,e1[2]) or table.find(toget,e2[2]) or table.find(toget,e3[2]) or table.find(toget,e4[2]) then
+			game.StarterGui:SetCore("SendNotification", {
+				Title = "Success!";
+				Text = "Enchants Gotten";
+				Duration = 5;
+				})
+			break
+		end
+		game.ReplicatedStorage.Framework.RemoteFunction:InvokeServer(0,"EnchanterServer","Buy",{})
+	end
+end
+if enchantMode == "Two Enchants" then
+	while true do task.wait()
+		lock = false
+		repeat wait()
+			e1 = string.split(ei.Enchant1.Value,'"')
+			e2 = string.split(ei.Enchant2.Value,'"')
+			e3 = string.split(ei.Enchant3.Value,'"')
+			e4 = string.split(ei.Enchant4.Value,'"')
+			if table.find(tolock,e1[2]) then
+				lock = true
+				locknum = 1
+			end
+			if table.find(tolock,e2[2]) then
+				lock = true
+				locknum = 2
+			end
+			if table.find(tolock,e3[2]) then
+				lock = true
+				locknum = 3
+			end
+			if table.find(tolock,e4[2]) then
+				lock = true
+				locknum = 4
+			end
+			if lock == false then
+				game.ReplicatedStorage.Framework.RemoteFunction:InvokeServer(0,"EnchanterServer","Buy",{})
+			end
+		until lock == true 
+		if ei.EnchantLock.Value == "[]" then
+			local connection
+			function Heartbeat()
+				if tonumber(game:GetService("Players")[game.Players.LocalPlayer.Name].PlayerGui.MainGui.ReEnchanter.Holder.Background.LockMode.LockAmount.Text) < 50 then
+					wait(0.0001)
+					game.ReplicatedStorage.Framework.RemoteFunction:InvokeServer(0,"EnchanterServer","BuyLock",{})
+				else
+					connection:Disconnect()
+				end
+			end
+			connection = rs.Heartbeat:Connect(Heartbeat)
+		end
+		wait(1)
+		game.ReplicatedStorage.Framework.RemoteFunction:InvokeServer(0,"EnchanterServer","ApplyLocks",{locknum,50})
+		wait(1)
+		gotten = false
+		repeat wait()
+			e1 = string.split(ei.Enchant1.Value,'"')
+			e2 = string.split(ei.Enchant2.Value,'"')
+			e3 = string.split(ei.Enchant3.Value,'"')
+			e4 = string.split(ei.Enchant4.Value,'"')
+			if table.find(toget,e1[2]) or table.find(toget,e2[2]) or table.find(toget,e3[2]) or table.find(toget,e4[2]) then
+				gotten = true
+			end
+			if gotten == false and ei.EnchantLock.Value ~= "[]" then
+				game.ReplicatedStorage.Framework.RemoteFunction:InvokeServer(0,"EnchanterServer","Buy",{})
+			end
+		until gotten == true or ei.EnchantLock.Value == "[]"
+		if gotten == true then
+		game.StarterGui:SetCore("SendNotification", {
+		    Title = "Success!";
+		    Text = "Enchants Gotten";
+		    Duration = 5;
+        })
+			break
+		end
+	end 
+end
+if enchantMode == "Multiple Enchants" then
+	while true do task.wait()
+		for i,v in pairs(toget) do
+			if table.find(tolock,v) then
+				print("cant have same enhcants in table!")
+				break
+			end
+		end
+		lock = false
+		repeat task.wait()
+			e1 = string.split(ei.Enchant1.Value,'"')
+			e2 = string.split(ei.Enchant2.Value,'"')
+			e3 = string.split(ei.Enchant3.Value,'"')
+			e4 = string.split(ei.Enchant4.Value,'"')
+			if table.find(tolock,e1[2]) then
+				lock = true
+				locknum = 1
+			end
+			if table.find(tolock,e2[2]) then
+				lock = true
+				locknum = 2
+			end
+			if table.find(tolock,e3[2]) then
+				lock = true
+				locknum = 3
+			end
+			if table.find(tolock,e4[2]) then
+				lock = true
+				locknum = 4
+			end
+			if lock == false then
+				game.ReplicatedStorage.Framework.RemoteFunction:InvokeServer(0,"EnchanterServer","Buy",{})
+			end
+		until lock == true 
+		if ei.EnchantLock.Value == "[]" then
+			local connection
+			function Heartbeat()
+				if tonumber(game:GetService("Players")[game.Players.LocalPlayer.Name].PlayerGui.MainGui.ReEnchanter.Holder.Background.LockMode.LockAmount.Text) < 50 then
+					wait(0.0001)
+					game.ReplicatedStorage.Framework.RemoteFunction:InvokeServer(0,"EnchanterServer","BuyLock",{})
+				else
+					connection:Disconnect()
+				end
+			end
+			connection = rs.Heartbeat:Connect(Heartbeat)
+		end
+		wait(0.1)
+		game.ReplicatedStorage.Framework.RemoteFunction:InvokeServer(0,"EnchanterServer","ApplyLocks",{locknum,50})
+		wait(0.1)
+		gotten = false
+		matches = 0
+		repeat task.wait()
+			e1 = string.split(ei.Enchant1.Value,'"')
+			e2 = string.split(ei.Enchant2.Value,'"')
+			e3 = string.split(ei.Enchant3.Value,'"')
+			e4 = string.split(ei.Enchant4.Value,'"')
+			if table.find(toget,e1[2]) then
+				matches = matches+1
+			end
+			if table.find(toget,e2[2]) then
+				matches = matches+1
+			end
+			if table.find(toget,e3[2]) then
+				matches = matches+1
+			end
+			if table.find(toget,e4[2]) then
+				matches = matches+1
+			end
+			if matches == #toget then
+				gotten = true
+			end
+			if gotten == false and ei.EnchantLock.Value ~= "[]" then
+				matches = 0
+				game.ReplicatedStorage.Framework.RemoteFunction:InvokeServer(0,"EnchanterServer","Buy",{})
+			end
+		until gotten == true or ei.EnchantLock.Value == "[]"
+		if gotten == true then
+			game.StarterGui:SetCore("SendNotification", {
+				Title = "Success!";
+				Text = "Enchants Gotten";
+				Duration = 5;
+			})
+			break
+		end
+	end 
+end
